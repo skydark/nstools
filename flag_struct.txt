@@ -1,0 +1,55 @@
+;用来存放flag的结构
+
+; 初始化结构
+; numalias Address, 100
+; numalias Length, 5
+; >>> flags_init Address, Length
+; $Address = "00000" & %Address = 5
+@def flags_init %1, %2
+	mov %%1, %2
+	mov $%1, ""
+	for %2 = %2 to 1 step -1
+		add $%1, "0"
+	next
+	return
+
+; 设置某个位置的flag
+; 注意，flag的位置从1到Length, 并只能将该位置的值设置为0～9中的数值
+; >>> flags_set Address, 3, 2
+; $Address = "00200"
+@def flags_set %1, %2, %3
+	if %3 > 9 mov %3, 9:skip 2
+	if %3 < 0 mov %3, 0
+	mid $1, $%1, %2, %%1-%2
+	mid $%1, $%1, 0, %2-1
+	itoa $2, %3
+	add $%1, $2
+	add $%1, $1
+	return
+
+; 取得某个位置的flag
+; numalias Value, 1
+; >>> flags_get %Value, Address, 3
+; %Value = 2
+@def flags_get i%3, %1, %2
+	mid $1, $%1, %2-1, 1
+	atoi %%3, $1
+	return
+
+; 将某个位置的flag的值增加一定的值
+; 最后一个参数是增加的值，用负数即可表示减少
+; 注意，最终值仍然被限定在0～9之间
+; >>> flags_change Address, 3, 4
+; $Address = "00600"
+@def flags_change %1, %2, %3
+	mid $1, $%1, %2, %%1-%2
+	mid $2, $%1, %2-1, 1
+	mid $%1, $%1, 0, %2-1
+	atoi %2, $2
+	add %3, %2
+	if %3 > 9 mov %3, 9:skip 2
+	if %3 < 0 mov %3, 0
+	itoa $2, %3
+	add $%1, $2
+	add $%1, $1
+	return

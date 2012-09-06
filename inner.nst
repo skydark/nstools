@@ -1,0 +1,18 @@
+
+; 我是被导入的段落
+@python
+@output = __
+@__ = lambda s: output('; 证明我修改了输出: '+s)
+@__('我的名字是: {__current_name}')
+@__base += 500
+@__('我把基址增加了500, 我的基址是: {__base}')
+@## 单引号里 @{var} 和 {var} 都可以使用
+@__('之前的内嵌 python 脚本使用 for 循环，变量 name 的值是 @{name}')
+@name = '新名字'
+@__('我把它改成了 {name}')
+
+@def test2 %1
+	测试输出ＢＡＳＥ　@{__base}
+	click
+	return
+
